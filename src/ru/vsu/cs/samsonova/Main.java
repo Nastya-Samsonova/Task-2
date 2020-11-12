@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Main {
     private static int moneyAmount;
     private static int amountMyCakes = 0;
+
     public static void main(String[] args) {
         int price1 = enterNumber("price of first cake");
         int price2 = enterNumber("price of second cake");
@@ -33,8 +34,7 @@ public class Main {
 
         if (countCheapCakes * minPrice > moneyAmount) {
             return moneyAmount / minPrice + amountMyCakes;
-        }
-        else {
+        } else {
             calculateRemainingCountCakes(minPrice, countCheapCakes, countCheapCakes);
             if (moneyAmount > countExpensiveCakes * maxPrice) {
                 return calculateRemainingCountCakes(maxPrice, countExpensiveCakes, countExpensiveCakes) + amountMyCakes;
@@ -43,19 +43,20 @@ public class Main {
             }
         }
     }
-        private static int calculateRemainingCountCakes ( int price, int countBoughtCakes, int amountShopCakes){
-            moneyAmount -= price * countBoughtCakes;
-            amountMyCakes += countBoughtCakes;
-            return amountShopCakes - countBoughtCakes;
-        }
 
-        private static int findCountOfExpensiveCakes ( int price1, int price2, int amountCake1, int amountCake2){
-            return price1 > price2 ? amountCake1 : amountCake2;
-        }
+    private static int calculateRemainingCountCakes(int price, int countBoughtCakes, int amountShopCakes) {
+        moneyAmount -= price * countBoughtCakes;
+        amountMyCakes += countBoughtCakes;
+        return amountShopCakes - countBoughtCakes;
+    }
 
-        private static int enterNumber (String value){
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter " + value + " ");
-            return scanner.nextInt();
-        }
+    private static int findCountOfExpensiveCakes(int price1, int price2, int amountCake1, int amountCake2) {
+        return price1 > price2 ? amountCake1 : amountCake2;
+    }
+
+    private static int enterNumber(String value) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter " + value + " ");
+        return scanner.nextInt();
+    }
 }
