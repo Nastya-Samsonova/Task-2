@@ -3,55 +3,53 @@ package ru.vsu.cs.samsonova;
 import java.util.Scanner;
 
 public class Main {
-    private static int moneyAmount;
-    private static int amountMyCakes = 0;
 
     public static void main(String[] args) {
         int price1 = enterNumber("price of first cake");
         int price2 = enterNumber("price of second cake");
-        moneyAmount = enterNumber("money amount");
+        int moneyAmount = enterNumber("money amount");
         int amountCake1 = enterNumber("amount first cakes");
         int amountCake2 = enterNumber("amount second cakes");
-        int amountBoughtCakes = calculateAmountBoughtCakes(price1, price2, amountCake1, amountCake2);
-        System.out.println("you can buy " + amountBoughtCakes + " cakes");
+        int amountCakesForBuy = determinePossibleCountCakesForBuy(price1, price2, amountCake1, amountCake2,
+                moneyAmount);
+        System.out.println("you can buy " + amountCakesForBuy + " cakes");
     }
 
-    private static int calculateAmountBoughtCakes(int price1, int price2, int amountCake1, int amountCake2) {
-        if (moneyAmount >= price1 + price2 & amountCake1 > 0 & amountCake2 > 0) {
-            return calculateCountBoughtCakes(price1, price2, amountCake1, amountCake2);
+    private static int determinePossibleCountCakesForBuy(int price1, int price2, int amountCake1, int amountCake2,
+                                                         int moneyAmount) {
+        if (moneyAmount >= price1 + price2 && amountCake1 > 0 && amountCake2 > 0) {
+            return calculateCountCakesForBuy(price1, price2, amountCake1, amountCake2, moneyAmount);
         } else {
             return 0;
         }
     }
 
-    private static int calculateCountBoughtCakes(int price1, int price2, int amountCake1, int amountCake2) {
-        int maxPrice = Math.max(price1, price2);
-        int minPrice = Math.min(price1, price2);
-        int countExpensiveCakes = findCountOfExpensiveCakes(price1, price2, amountCake1, amountCake2);
-        int countCheapCakes = amountCake1 + amountCake2 - countExpensiveCakes;
-
-        countExpensiveCakes = calculateRemainingCountCakes(maxPrice, 1, countExpensiveCakes);
-
-        if (countCheapCakes * minPrice > moneyAmount) {
-            return moneyAmount / minPrice + amountMyCakes;
+    public static int calculateCountCakesForBuy(int price1, int price2, int amountCake1, int amountCake2,
+                                                int moneyAmount) {
+        int maxPrice;
+        int minPrice;
+        int countExpensiveCakes;
+        int countCheapCakes;
+        if (price1 > price2) {
+            maxPrice = price1;
+            minPrice = price2;
+            countExpensiveCakes = amountCake1;
+            countCheapCakes = amountCake2;
         } else {
-            calculateRemainingCountCakes(minPrice, countCheapCakes, countCheapCakes);
-            if (moneyAmount > countExpensiveCakes * maxPrice) {
-                return calculateRemainingCountCakes(maxPrice, countExpensiveCakes, countExpensiveCakes) + amountMyCakes;
+            maxPrice = price2;
+            minPrice = price1;
+            countExpensiveCakes = amountCake2;
+            countCheapCakes = amountCake1;
+        }
+        if (countCheapCakes * minPrice > moneyAmount - maxPrice) {
+            return (moneyAmount - maxPrice) / minPrice + 1;
+        } else {
+            if (moneyAmount - (maxPrice + minPrice * countCheapCakes) > (countExpensiveCakes - 1) * maxPrice) {
+                return countExpensiveCakes + countCheapCakes;
             } else {
-                return moneyAmount / maxPrice + amountMyCakes;
+                return countCheapCakes + 1 + (moneyAmount - (maxPrice + minPrice * countCheapCakes)) / maxPrice;
             }
         }
-    }
-
-    private static int calculateRemainingCountCakes(int price, int countBoughtCakes, int amountShopCakes) {
-        moneyAmount -= price * countBoughtCakes;
-        amountMyCakes += countBoughtCakes;
-        return amountShopCakes - countBoughtCakes;
-    }
-
-    private static int findCountOfExpensiveCakes(int price1, int price2, int amountCake1, int amountCake2) {
-        return price1 > price2 ? amountCake1 : amountCake2;
     }
 
     private static int enterNumber(String value) {
